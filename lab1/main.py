@@ -126,15 +126,15 @@ if __name__ == "__main__":
 		perms = permutations(range(n), n)
 		sum = interval(0, 0)
 		for perm in perms:
-			#addend = interval(1, 1)
 			addend = matrix[0][perm[0]]
-			#for i in range(n):
 			for i in range(1, n):
 				addend *= matrix[i][perm[i]]
-				if count_inversions(perm) % 2 == 0:
-					sum += addend
-				else:
-					sum -= addend
+
+			if count_inversions(perm) % 2 == 0:
+				sum += addend
+			else:
+				sum -= addend
+
 		return sum
 
 	A1 = [[elemDefault, elemDefault], [elemSpecial, elemDefault]]
@@ -149,7 +149,6 @@ if __name__ == "__main__":
 				A2[i][j] = elemDiagonal
 			else:
 				A2[i][j] = elemNonDiagonal
-
 	print("problem 2: testing determinant value...")
 	print(determinant_by_definition(A2))
 	print("\n")
