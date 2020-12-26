@@ -67,7 +67,7 @@ def subgrad(A, x, i):
     value = numpy.zeros(shape=x.shape)
     if 0 <= i < dim:
         for j in range(dim):
-            dmax = minor_dmax(A, x, i, j)
+            dmax = minor(A, x, i, j)
             tmp1 = max(0.0, A[i][j].lower) * dx(x[j], pos=False) + \
                    min(0.0, A[i][j].upper) * dx(x[j + dim], pos=False) - dmax[0]
             tmp2 = max(0.0, A[i][j].lower) * dx(x[j], pos=False) + \
@@ -76,7 +76,7 @@ def subgrad(A, x, i):
             value[j + dim] -= tmp2
     else:
         for j in range(dim):
-            dmax = major_dmax(A, x, i - dim, j)
+            dmax = major(A, x, i - dim, j)
             tmp1 = dmax[0] - \
                    max(0.0, A[i - dim][j].lower) * dx(x[j + dim], pos=False) - \
                    min(0.0, A[i - dim][j].upper) * dx(x[j], pos=False)
@@ -88,25 +88,25 @@ def subgrad(A, x, i):
     return value
 
 
-def minor_dmax(A, x, i, j):
+def minor(A, x, i, j):
     dim = len(x) // 2
-    prod1 = max(0.0, A[i][j].upper) * max(0.0, x[j])
-    prod2 = min(0.0, A[i][j].lower) * max(0.0, x[j + dim])
-    if prod1 > prod2:
+    tmp1 = max(0.0, A[i][j].upper) * max(0.0, x[j])
+    tmp2 = min(0.0, A[i][j].lower) * max(0.0, x[j + dim])
+    if tmp1 > tmp2:
         return max(0.0, A[i][j].upper), 0.0
-    elif prod1 == prod2:
+    elif tmp1 == tmp2:
         return 0.5 * max(0.0, A[i][j].upper), 0.5 * min(0.0, A[i][j].lower)
     else:
         return 0.0, min(0.0, A[i][j].lower)
 
 
-def major_dmax(A, x, i, j):
+def major(A, x, i, j):
     dim = len(x) // 2
-    prod1 = max(0.0, A[i][j].upper) * max(0.0, x[j + dim])
-    prod2 = min(0.0, A[i][j].lower) * max(0.0, x[j])
-    if prod1 > prod2:
+    tmp1 = max(0.0, A[i][j].upper) * max(0.0, x[j + dim])
+    tmp2 = min(0.0, A[i][j].lower) * max(0.0, x[j])
+    if tmp1 > tmp2:
         return 0.0, max(0.0, A[i][j].upper)
-    elif prod1 == prod2:
+    elif tmp1 == tmp2:
         return 0.5 * min(0.0, A[i][j].lower), 0.5 * max(0.0, A[i][j].lower)
     else:
         return min(0.0, A[i][j].lower), 0.0
